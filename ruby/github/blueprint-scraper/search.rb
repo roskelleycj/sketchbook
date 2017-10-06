@@ -87,8 +87,8 @@ end
 data = DataSet.new
 
 blueprints_processed = 0
-repo_count = 1378 # As of Aug 11, 2015
-blueprints = Dir["/Users/drautb/GitHub/drautb/sketchbook/ruby/github/blueprint-scraper/fs-eng/*.yml"]
+blueprint_count = 1151 # As of Oct 06, 2017
+blueprints = Dir["/home/roskelleycj/repos/drautb-sketchbook/ruby/github/blueprint-scraper/fs-eng/*.yml"]
 blueprints.each do |blueprint_file|
   puts "Processing '#{blueprint_file}'"
   b = YAML.load_file(blueprint_file)
@@ -98,8 +98,8 @@ end
 
 puts "\n\n"
 puts "Processed #{blueprints_processed} blueprints."
-percentage = (blueprints_processed / repo_count.to_f * 100).to_i
-puts "#{blueprints_processed}/#{repo_count} fs-eng repos have blueprints. (#{percentage}%)"
+percentage = (blueprints_processed / blueprint_count.to_f * 100).to_i
+puts "#{blueprints_processed}/#{blueprint_count} blueprints processed. (#{percentage}%)"
 puts "\n"
 percentage = (data.dot_three / blueprints_processed.to_f * 100).to_i
 puts "#{data.dot_three}/#{blueprints_processed} blueprints are 0.3. (#{percentage}%)"
