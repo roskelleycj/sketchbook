@@ -5,7 +5,7 @@ $stdout.sync = true
 
 class DataSet
 
-  attr_reader :dot_three, :one_oh, :dot_three_with_deploy, :system_keys, :system_count, :service_count, :service_keys, :blueprint_names_to_migrate
+  attr_reader :dot_three, :one_oh, :dot_three_with_deploy, :system_keys, :system_count, :service_count, :service_keys, :blueprint_names_to_migrate, :system_types
 
   def initialize
     @dot_three = 0
@@ -16,6 +16,7 @@ class DataSet
     @system_keys = {}
     @service_keys = {}
     @blueprint_names_to_migrate = []
+    @system_types = {}
   end
 
   def process_blueprint(blueprint_data, blueprint_file)
@@ -61,6 +62,11 @@ class DataSet
         else
           @system_keys[sub_sys_key] += 1
         end
+
+        if @system_types[sub_sys_key] == nil
+          @system_types[sub_sys_key] = []
+        end
+        @system_types[sub_sys_key].push(blueprint_file)
       end
     end
   end
@@ -104,7 +110,7 @@ puts "\n"
 percentage = (data.dot_three / blueprints_processed.to_f * 100).to_i
 puts "#{data.dot_three}/#{blueprints_processed} blueprints are 0.3. (#{percentage}%)"
 percentage = (data.dot_three_with_deploy / data.dot_three.to_f * 100).to_i
-puts "Of the #{data.dot_three} 0.3 blueprtints, #{data.dot_three_with_deploy} deploy systems to AWS. (#{percentage}%)"
+puts "Of the #{data.dot_three} 0.3 blueprints, #{data.dot_three_with_deploy} deploy systems to AWS. (#{percentage}%)"
 
 puts "In the #{data.dot_three_with_deploy} 0.3 blueprints that deploy to AWS, there are #{data.system_count} systems containing #{data.service_count} services."
 
@@ -122,3 +128,13 @@ puts "\n\n"
 
 puts "Blueprint Files to Migrate:"
 puts data.blueprint_names_to_migrate.uniq.sort
+
+puts "\n\n"
+puts "Beanstalk Systems to Migrate:"
+puts data.system_types['beanstalk'].uniq.sort
+puts "\n\n"
+puts "Cloudformation Systems to Migrate:"
+puts data.system_types['cloudformation'].uniq.sort
+puts "\n\n"
+puts "Heroku Systems to Migrate:"
+puts data.system_types['heroku'].uniq.sort
