@@ -125,16 +125,14 @@ data.service_keys.sort {|a1,a2| a2[1].to_i <=> a1[1].to_i }.each do |k, v|
 end
 
 puts "\n\n"
-
-puts "Blueprint Files to Migrate:"
-puts data.blueprint_names_to_migrate.uniq.sort
-
-puts "\n\n"
-puts "Beanstalk Systems to Migrate:"
+puts "Beanstalk Systems to Migrate (#{data.system_types['beanstalk'].uniq.size}):"
 puts data.system_types['beanstalk'].uniq.sort
 puts "\n\n"
-puts "Cloudformation Systems to Migrate:"
+puts "Cloudformation Systems to Migrate (#{data.system_types['cloudformation'].uniq.size}):"
 puts data.system_types['cloudformation'].uniq.sort
 puts "\n\n"
-puts "Heroku Systems to Migrate:"
+puts "Heroku Systems to Migrate (#{data.system_types['heroku'].uniq.size}):"
 puts data.system_types['heroku'].uniq.sort
+puts "\n\n"
+puts "All Blueprint Files to Migrate (#{data.blueprint_names_to_migrate.uniq.size}):"
+puts data.blueprint_names_to_migrate.uniq.sort
