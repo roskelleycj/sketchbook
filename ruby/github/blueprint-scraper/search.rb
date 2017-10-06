@@ -18,11 +18,11 @@ class DataSet
     @blueprint_names_to_migrate = []
   end
 
-  def process_blueprint(blueprint_data)
+  def process_blueprint(blueprint_data, blueprint_file)
     return unless blueprint_data
-    process_version(blueprint_data)
+    process_version(blueprint_data, blueprint_file)
     if is_0_3?(blueprint_data)
-      process_deploy_section(blueprint_data)
+      process_deploy_section(blueprint_data, blueprint_file)
       process_services_section(blueprint_data)
     end
   end
@@ -33,29 +33,29 @@ class DataSet
     blueprint_data["version"] == 0.3
   end
 
-  def process_version(blueprint_data)
+  def process_version(blueprint_data, blueprint_file)
     version = blueprint_data["version"]
     if is_0_3?(blueprint_data)
       @dot_three += 1
     elsif version == 1.0
       @one_oh += 1
     else
-      puts "\tUnknown blueprint version: #{version}"
+      puts "\t #{blueprint_file} has Unknown blueprint version: #{version}"
     end
   end
 
-  def process_deploy_section(blueprint_data)
+  def process_deploy_section(blueprint_data, blueprint_file)
     if blueprint_data["app"] == nil || blueprint_data["app"]["deploy"] == nil || blueprint_data["app"]["deploy"]["systems"] == nil
       return
     end
 
     @dot_three_with_deploy += 1
-    @blueprint_names_to_migrate.push(blueprint_data["app"]["name"])
+    @blueprint_names_to_migrate.push(blueprint_file)
     systems = blueprint_data["app"]["deploy"]["systems"]
     systems.each do |sys_key, sys_def|
-      @system_count += 1
       sys_def.each do |sub_sys_key, _|
         # @service_count += 1
+        @system_count += 1
         if @system_keys[sub_sys_key] == nil
           @system_keys[sub_sys_key] = 1
         else
@@ -92,7 +92,7 @@ blueprints = Dir["/home/roskelleycj/repos/drautb-sketchbook/ruby/github/blueprin
 blueprints.each do |blueprint_file|
   puts "Processing '#{blueprint_file}'"
   b = YAML.load_file(blueprint_file)
-  data.process_blueprint(b)
+  data.process_blueprint(b, blueprint_file)
   blueprints_processed += 1
 end
 
@@ -120,5 +120,5 @@ end
 
 puts "\n\n"
 
-puts "Blueprint Names to Migrate:"
-puts data.blueprint_names_to_migrate.uniq
+puts "Blueprint Files to Migrate:"
+puts data.blueprint_names_to_migrate.uniq.sort
